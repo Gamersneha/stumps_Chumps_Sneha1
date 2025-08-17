@@ -1,0 +1,119 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.game-container {
+  border-radius: 10px;
+  width: 100%;
+  height: 100vh;
+  background: url('../utils/HomeBg.jpg') no-repeat center center;
+  background-size: cover;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  position: relative;
+}
+
+/* optional overlay */
+.game-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 0;
+}
+
+.top-bar,
+.main-area,
+.scoreboard {
+  position: relative;
+  z-index: 1;
+}
+
+/* Top bar */
+.top-bar {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 12px;
+
+  .settings-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+  }
+}
+
+/* Main game area */
+.main-area {
+  flex: 1;
+  display: flex;
+  justify-content: space-between; /* push left & right */
+  align-items: center;
+  padding: 10px 30px;
+}
+
+.game-column {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* RCB column left */
+.game-column:first-child {
+  align-items: flex-start;
+}
+
+/* AI column right */
+.game-column:last-child {
+  align-items: flex-end;
+}
+
+.player-box {
+  display: flex;
+  align-items: center;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  padding: 3px 8px;
+  margin-bottom: 10px;
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+
+  .circle {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    margin: 0 6px;
+  }
+}
+
+.game-box {
+  flex: 1;
+  width: 550px;          /* 👈 wider rectangle */
+  max-width: 95%;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(6px);
+}
+
+/* Scoreboard */
+.scoreboard {
+  flex-shrink: 0;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  margin-bottom: 12px;
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+}
