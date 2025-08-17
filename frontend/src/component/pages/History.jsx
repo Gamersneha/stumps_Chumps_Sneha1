@@ -9,7 +9,9 @@ const History = () => {
   const navigate = useNavigate();
 
   // actual saved nickname + avatar
-  const [nickname, setNickname] = useState(localStorage.getItem("nickname") || "Player123");
+  const [nickname, setNickname] = useState(
+    localStorage.getItem("nickname") || "Player123"
+  );
   const [avatar, setAvatar] = useState(localStorage.getItem("avatar") || "");
 
   // temporary nickname for input field
@@ -28,6 +30,11 @@ const History = () => {
     { player1: nickname, player2: "Mr AI", winner: "Mr AI", margin: 18 },
     { player1: nickname, player2: "AI Mahashai", winner: nickname, margin: 12 },
     { player1: nickname, player2: "Jai Ho AI", winner: "Jai Ho AI", margin: 6 },
+    { player1: nickname, player2: " Ho AI", winner: " Ho AI", margin: 12 },
+    { player1: nickname, player2: " Ho AI", winner: " Ho AI", margin: 12 },
+    { player1: nickname, player2: " Ho AI", winner: " Ho AI", margin: 12 },
+    { player1: nickname, player2: " Ho AI", winner: " Ho AI", margin: 12 },
+    { player1: nickname, player2: " Ho AI", winner: " Ho AI", margin: 12 },
   ];
 
   const handleSave = () => {
@@ -63,8 +70,12 @@ const History = () => {
         />
 
         <div className="btn-group">
-          <button className="btn save" onClick={handleSave}>Save</button>
-          <button className="btn cancel" onClick={() => navigate("/")}>Cancel</button>
+          <button className="btn save" onClick={handleSave}>
+            Save
+          </button>
+          <button className="btn cancel" onClick={() => navigate("/")}>
+            Cancel
+          </button>
         </div>
       </div>
 

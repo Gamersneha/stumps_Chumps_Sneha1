@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Pixelify+Sans:wght@400..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Pixelify+Sans:wght@400..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&family=VT323&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bangers&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Pixelify+Sans:wght@400..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bangers&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Pixelify+Sans:wght@400..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&family=VT323&display=swap");
 
-* {
-  overflow: hidden;
-}
+// * {
+//   overflow: hidden;
+// }
 
 .home-container {
   width: 100%;
@@ -59,7 +59,7 @@
     pointer-events: none;
 
     h1 {
-      font-family: 'VT323', monospace;
+      font-family: "VT323", monospace;
       font-size: 9rem;
       color: #00ffcc;
       text-align: center;
@@ -111,14 +111,35 @@
     box-shadow: 0 0 15px #00ffcc55, 0 0 10px #00ffcc33 inset;
   }
 
-  &.pink { color: #ff66cc; box-shadow: 0 3px 6px rgba(0,0,0,0.3), 0 0 5px #ff66cc44 inset; }
-  &.pink:hover { background-color: #ff66cc11; box-shadow: 0 0 15px #ff66cc55, 0 0 10px #ff66cc33 inset; }
+  &.pink {
+    color: #ff66cc;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3), 0 0 5px #ff66cc44 inset;
+  }
+  &.pink:hover {
+    background-color: #ff66cc11;
+    box-shadow: 0 0 15px #ff66cc55, 0 0 10px #ff66cc33 inset;
+  }
 
-  &.blue { color: #00ffcc; box-shadow: 0 3px 6px rgba(0,0,0,0.3), 0 0 5px #00ffcc44 inset; }
-  &.blue:hover { background-color: #00ffcc11; box-shadow: 0 0 15px #00ffcc55, 0 0 10px #00ffcc33 inset; }
+  &.blue {
+    color: #00ffcc;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3), 0 0 5px #00ffcc44 inset;
+  }
+  &.blue:hover {
+    background-color: #00ffcc11;
+    box-shadow: 0 0 15px #00ffcc55, 0 0 10px #00ffcc33 inset;
+  }
 
-  &.green { color: #33ff66; box-shadow: 0 3px 6px rgba(0,0,0,0.3), 0 0 5px #33ff6644 inset; }
-  &.green:hover { background-color: #33ff6611; box-shadow: 0 0 15px #33ff6655, 0 0 10px #33ff6633 inset; }
+  &.green {
+    color: #33ff66;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3), 0 0 5px #33ff6644 inset;
+  }
+  &.green:hover {
+    background-color: #33ff6611;
+    box-shadow: 0 0 15px #33ff6655, 0 0 10px #33ff6633 inset;
+  }
 
-  &.big-btn { font-size: 1.3rem; padding: 16px 35px; }
+  &.big-btn {
+    font-size: 1.3rem;
+    padding: 16px 35px;
+  }
 }
