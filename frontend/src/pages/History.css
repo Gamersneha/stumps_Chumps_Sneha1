@@ -1,0 +1,141 @@
+.profile-page {
+  min-height: 100vh;
+  background: url("/HomeBg.jpg") no-repeat center center fixed;
+  background-size: cover;
+  color: white;
+  text-align: center;
+  padding: 40px;
+}
+
+.profile-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-shadow: 0 0 12px rgba(0,0,0,0.7);
+}
+
+/* Avatar + nickname */
+.profile-edit {
+  margin-bottom: 40px;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.nickname-input {
+  padding: 10px 15px;
+  margin: 15px 0;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+}
+
+.btn-group {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.btn {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn.save {
+  background: #4cafef;
+  color: white;
+}
+
+.btn.cancel {
+  background: gray;
+  color: white;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+/* Career section */
+.career-title {
+  font-size: 1.8rem;
+  margin: 30px 0 15px;
+}
+
+.match-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 70%;
+  margin: 0 auto;
+}
+
+.match-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0,0,0,0.6);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+}
+
+.player {
+  flex: 1;
+  padding: 15px;
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.player1 {
+  background: #e63946;
+  color: white;
+}
+
+.player2 {
+  background: #4361ee;
+  color: white;
+}
+
+.result {
+  flex: 1;
+  padding: 15px;
+  background: white;
+  color: black;
+  font-size: 0.95rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.records-btn {
+  background: transparent;
+  color: #fff;
+  border: 2px solid #4895ef;
+  padding: 8px 18px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.records-btn:hover {
+  background: #4895ef;
+  transform: translateY(-1px);
+}
+
+.records-btn:active {
+  background: #4361ee;
+  transform: translateY(1px);
+}
