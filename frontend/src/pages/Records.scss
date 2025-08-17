@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+.records-wrapper {
+  font-family: 'VT323', monospace;
+  font-size: 30px;
+  min-height: 100vh;
+  color: #e6e8ee;
+  background: url('../../utils/HomeBg.jpg') no-repeat center center;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+
+  header {
+    padding: 2rem;
+    h1 { margin: 0 0 8px; }
+  }
+
+  .card {
+    font-family: inherit;
+    font-size: inherit;
+    background: linear-gradient(180deg, rgba(18,23,41,0.8), rgba(15,20,36,0.8));
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.24);
+    backdrop-filter: blur(8px);
+    margin: 0;
+  }
+
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(120px,1fr));
+    gap: 12px;
+
+    .kpi {
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(0,0,0,0.3);
+      font-family: inherit;
+
+      .label { color: #a6adbb; font-size: 22px; }
+      .value { font-size: 30px; font-weight: 700; margin-top: 4px; }
+      &.good .value { color: #21c07a; }
+      &.bad .value { color: #ff5d73; }
+      &.warn .value { color: #f7b955; }
+    }
+  }
+
+  main {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .chart-scorecard-row {
+    display: flex;
+    flex: 1 1 auto;
+    gap: 26px;
+    min-height: 400px;
+
+    > .radar-chart { flex: 1; display: flex; align-items: center; justify-content: center; }
+    > .scorecard { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+  }
+
+  .scorecard {
+    h3 { margin: 0 0 8px; font-weight: 600; padding: 16px 0; color: #6aa6ff; }
+    table { font-family: inherit; background: rgba(0,0,0,0.3); }
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: none;
+    margin-bottom: 12px;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+      th, td { padding: 8px 10px; font-size: 20px; border-bottom: 1px solid rgba(255,255,255,0.06); text-align: left; }
+      thead { background: rgba(255,255,255,0.04); }
+      tbody tr:hover { background: rgba(255,255,255,0.06); }
+    }
+  }
+
+  @media (max-width:1024px){
+    .chart-scorecard-row { flex-direction: column; > .radar-chart, > .scorecard { width: 100%; } }
+    .kpis { grid-template-columns: repeat(2,1fr); }
+  }
+}
