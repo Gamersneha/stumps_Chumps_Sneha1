@@ -41,7 +41,6 @@ const History = () => {
     setNickname(tempNickname); // update actual nickname
     localStorage.setItem("nickname", tempNickname);
     localStorage.setItem("avatar", avatar);
-    navigate("/"); // Go back home
   };
 
   const handleChangeAvatar = () => {
@@ -73,8 +72,8 @@ const History = () => {
           <button className="btn save" onClick={handleSave}>
             Save
           </button>
-          <button className="btn cancel" onClick={() => navigate("/")}>
-            Cancel
+          <button className="btn cancel" onClick={() => navigate(-1)}>
+            Go Back
           </button>
         </div>
       </div>

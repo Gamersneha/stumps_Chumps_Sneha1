@@ -4,7 +4,6 @@ import { Stars, OrbitControls } from "@react-three/drei";
 import { Link } from "react-router-dom";
 import "../styles/home.scss";
 import cbg from "/HomeBg.jpg";
-import { Settings } from "lucide-react";
 import NicknamePopup from "./NicknamePopup";
 
 // DiceBear base URL
@@ -52,14 +51,6 @@ const Home = () => {
     localStorage.setItem("avatar", url);
   };
 
-  const handleChangeAvatar = () => {
-    // random seed for avatar
-    const randomSeed = `${nickname}-${Math.floor(Math.random() * 1000)}`;
-    const url = `${avatarBase}${encodeURIComponent(randomSeed)}`;
-    setAvatar(url);
-    localStorage.setItem("avatar", url);
-  };
-
   return (
     <div
       className="home-container"
@@ -102,9 +93,6 @@ const Home = () => {
             <NeonButton text="Rules" color="blue" />
           </Link>
           <NeonButton text="Tutorial" color="blue" />
-          <NeonButton color="blue">
-            <Settings size={20} />
-          </NeonButton>
         </div>
 
         {/* Center Logo */}
