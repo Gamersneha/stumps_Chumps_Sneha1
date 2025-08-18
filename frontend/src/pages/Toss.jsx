@@ -107,7 +107,9 @@ const Toss = () => {
         // User loses → randomly pick Bat/Bowl and redirect
         const randomChoice = Math.random() > 0.5 ? "Batting" : "Bowling";
         setTimeout(() => {
-          navigate("/game", { state: { choice: randomChoice, wonToss: false } });
+          navigate("/game", {
+            state: { choice: randomChoice, wonToss: false },
+          });
         }, 1000); // delay to show result briefly
       }
     }, 3000);
@@ -155,8 +157,12 @@ const Toss = () => {
         {/* Batting/Bowling Choice if user wins */}
         {showBatBowl && (
           <div className="choice-buttons">
-            <button onClick={() => handleBatBowlChoice("Batting")}>Batting</button>
-            <button onClick={() => handleBatBowlChoice("Bowling")}>Bowling</button>
+            <button onClick={() => handleBatBowlChoice("Batting")}>
+              Batting
+            </button>
+            <button onClick={() => handleBatBowlChoice("Bowling")}>
+              Bowling
+            </button>
           </div>
         )}
       </div>
