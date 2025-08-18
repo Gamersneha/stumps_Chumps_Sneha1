@@ -2,7 +2,7 @@ from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import torch
 import torch.nn as nn
-from torchvision import transforms, models
+from torchvision.models import densenet121
 from PIL import Image
 import io
 
@@ -12,6 +12,7 @@ CLASS_NAMES = ['0', '1', '2', '3', '4', '5', '6']
 NUM_CLASSES = len(CLASS_NAMES)
 
 # --- Preprocess ---
+from torchvision import transforms
 preprocess = transforms.Compose([
     transforms.Resize((128, 128)),
     transforms.ToTensor(),
@@ -20,7 +21,7 @@ preprocess = transforms.Compose([
 ])
 
 # --- Load Model ---
-model = models.densenet121(pretrained=False)
+model = densenet121(weights=None)   # ✅ replaces pretrained=False
 num_ftrs = model.classifier.in_features
 model.classifier = nn.Sequential(
     nn.Linear(num_ftrs, 500),
