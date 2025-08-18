@@ -145,7 +145,7 @@ const Records = () => {
 
     // --- Calculate Derived Stats ---
     const battingAvg =
-      humanL > 0 // <-- CORRECTED: Check if the player has been dismissed at least once
+      careerBatting.WIKTS > 0
         ? (careerBatting.RUNS / humanL).toFixed(2)
         : "0.00"; // Avg is runs per dismissal
     const battingSr =
@@ -234,32 +234,16 @@ const Records = () => {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      // Hide the legend (e.g., "Human Stats")
-      legend: {
-        display: false,
-      },
-      // Hide the main title (e.g., "Human Stats Overview")
-      title: {
-        display: false,
-      },
+      legend: { position: "top", labels: { color: "#e6e8ee" } },
+      title: { display: true, text: "Human Stats Overview", color: "#e6e8ee" },
     },
     scales: {
       r: {
         beginAtZero: true,
-        // Hide the scale numbers (10, 20, 30, etc.)
-        ticks: {
-          display: false,
-          backdropColor: "rgba(0,0,0,0)", // Also hide the tick background
-        },
-        grid: {
-          color: "rgba(255,255,255,0.1)",
-        },
-        angleLines: {
-          color: "rgba(255,255,255,0.2)",
-        },
-        pointLabels: {
-          color: "#e6e8ee",
-        },
+        ticks: { color: "#e6e8ee", backdropColor: "rgba(0,0,0,0.5)" },
+        grid: { color: "rgba(255,255,255,0.1)" },
+        angleLines: { color: "rgba(255,255,255,0.2)" },
+        pointLabels: { color: "#e6e8ee" },
         suggestedMax:
           Math.max(stats.human.wins, stats.human.losses, stats.draws) + 5,
       },
@@ -279,19 +263,19 @@ const Records = () => {
           <div className="kpis">
             <div className="kpi">
               <div className="label">Total Matches</div>
-              <div className="value">{stats.total / 2}</div>
+              <div className="value">{stats.total}</div>
             </div>
             <div className="kpi good">
               <div className="label">Wins</div>
-              <div className="value">{stats.human.wins / 2}</div>
+              <div className="value">{stats.human.wins}</div>
             </div>
             <div className="kpi bad">
               <div className="label">Losses</div>
-              <div className="value">{stats.human.losses / 2}</div>
+              <div className="value">{stats.human.losses}</div>
             </div>
             <div className="kpi warn">
               <div className="label">Draws</div>
-              <div className="value">{stats.draws / 2}</div>
+              <div className="value">{stats.draws}</div>
             </div>
             <div className="kpi">
               <div className="label">Win %</div>
@@ -307,7 +291,7 @@ const Records = () => {
             </div>
             <div className="kpi">
               <div className="label">Human Win Streak</div>
-              <div className="value">{stats.human.streak / 2}</div>
+              <div className="value">{stats.human.streak}</div>
             </div>
           </div>
         </div>
@@ -336,14 +320,14 @@ const Records = () => {
                 <tbody>
                   {stats.battingStats.map((b, idx) => (
                     <tr key={idx}>
-                      <td>{b.MAT / 2}</td>
-                      <td>{b.RUNS / 2}</td>
+                      <td>{b.MAT}</td>
+                      <td>{b.RUNS}</td>
                       <td>{b.HS}</td>
                       <td>{b.AVG}</td>
                       <td>{b.SR}</td>
-                      <td>{b.HUNDREDS / 2}</td>
-                      <td>{b.FIFTIES / 2}</td>
-                      <td>{b.SIXES / 2}</td>
+                      <td>{b.HUNDREDS}</td>
+                      <td>{b.FIFTIES}</td>
+                      <td>{b.SIXES}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -368,9 +352,9 @@ const Records = () => {
                 <tbody>
                   {stats.bowlingStats.map((b, idx) => (
                     <tr key={idx}>
-                      <td>{b.MAT / 2}</td>
-                      <td>{b.BALLS / 2}</td>
-                      <td>{b.RUNS / 2}</td>
+                      <td>{b.MAT}</td>
+                      <td>{b.BALLS}</td>
+                      <td>{b.RUNS}</td>
                       <td>{b.WIKTS}</td>
                       <td>{b.BBM}</td>
                       <td>{b.AVE}</td>

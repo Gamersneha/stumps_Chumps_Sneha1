@@ -3,12 +3,12 @@ import axios from "axios";
 import { Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-import zero from "/hand_0.png";
-import two from "/hand_2.png";
-import three from "/hand_3.png";
-import four from "/hand_4.png";
-import five from "/hand_5.png";
-import six from "/hand_6.png";
+import zero from "../utils/hand 0.jpg";
+import two from "../utils/hand 2.jpg";
+import three from "../utils/hand 3.jpg";
+import four from "../utils/hand 4.jpg";
+import five from "../utils/hand 5.jpg";
+import six from "../utils/hand 6.jpg";
 
 // The key for storing the match history log
 const STORAGE_KEY = "handCricketMatchLog_v2";
@@ -24,7 +24,7 @@ const styles = {
     fontFamily: "sans-serif",
     padding: "1rem",
     boxSizing: "border-box",
-    backgroundImage: `url("/HomeBg.jpg")`,
+    backgroundImage: `url('/HomeBg.jpg')`,
     backgroundSize: "cover",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
@@ -194,6 +194,8 @@ const handImages = {
   5: five,
   6: six,
 };
+
+
 
 const Game = () => {
   const navigate = useNavigate();
@@ -396,7 +398,7 @@ const Game = () => {
         winner = "Draw";
       }
 
-      // In inning 2, currentInning is AI's batting. firstInning is Human's.
+      // In inning 2, `currentInning` is AI's batting. `firstInning` is Human's.
       const newRecord = {
         winner,
         humanScore: finalState.firstInning.runs,
@@ -571,24 +573,19 @@ const Game = () => {
               }}
             >
               {aiChoice !== null ? (
-                handImages[aiChoice] ? (
-                  <img
-                    src={handImages[aiChoice]}
-                    alt={`AI chose ${aiChoice}`}
-                    style={{
-                      width: "80%",
-                      height: "80%",
-                      objectFit: "contain",
-                    }}
-                  />
-                ) : (
-                  <span style={{ fontSize: "5rem", color: "white" }}>
-                    {aiChoice}
-                  </span> // fallback if no image
-                )
-              ) : (
-                <span style={{ fontSize: "5rem", color: "white" }}>?</span>
-              )}
+  handImages[aiChoice] ? (
+    <img
+      src={handImages[aiChoice]}
+      alt={`AI chose ${aiChoice}`}
+      style={{ width: "80%", height: "80%", objectFit: "contain" }}
+    />
+  ) : (
+    <span style={{ fontSize: "5rem", color: "white" }}>{aiChoice}</span> // fallback if no image
+  )
+) : (
+  <span style={{ fontSize: "5rem", color: "white" }}>?</span>
+)}
+
             </span>
           </div>
         </div>
