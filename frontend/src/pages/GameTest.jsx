@@ -10,10 +10,8 @@ import four from "../utils/hand 4.jpg";
 import five from "../utils/hand 5.jpg";
 import six from "../utils/hand 6.jpg";
 
-// The key for storing the match history log
 const STORAGE_KEY = "handCricketMatchLog_v2";
 
-// Styles remain the same
 const styles = {
   gameContainer: {
     display: "flex",
@@ -195,8 +193,6 @@ const handImages = {
   6: six,
 };
 
-
-
 const Game = () => {
   const navigate = useNavigate();
   const videoRef = useRef(null);
@@ -207,12 +203,14 @@ const Game = () => {
   const [avatar] = useState(() => localStorage.getItem("avatar") || null);
   const aiAvatar = "https://api.dicebear.com/9.x/bottts/svg";
 
+  const [gameSettings, setGameSettings] = useState(null);
+
   const getInitialMatchState = () => ({
     inning: 1,
     target: 0,
     gameOver: false,
     matchResult: "",
-    firstInning: { runs: 0, overs: 0.0, totalBalls: 0 },
+    firstInning: { runs: 0, wickets: 0, totalBalls: 0 },
     currentInning: {
       teamRuns: 0,
       wickets: 0,
@@ -233,8 +231,22 @@ const Game = () => {
   const [isGameActive, setIsGameActive] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem("cricketMatch", JSON.stringify(match));
-  }, [match]);
+    const settingsData = localStorage.getItem("cricketGameSettings");
+    if (settingsData) {
+      setGameSettings(JSON.parse(settingsData));
+    } else {
+      toast.error("No game settings found. Redirecting to setup.", {
+        id: "settings-error-toast",
+      });
+      setTimeout(() => navigate("/"), 2000);
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    if (gameSettings) {
+      localStorage.setItem("cricketMatch", JSON.stringify(match));
+    }
+  }, [match, gameSettings]);
 
   const performExit = useCallback(
     (path) => {
@@ -326,7 +338,6 @@ const Game = () => {
   }, []);
 
   const calculateOvers = (balls) => {
-    if (balls === 0) return 0.0;
     const overs = Math.floor(balls / 6);
     const remainingBalls = balls % 6;
     return parseFloat(`${overs}.${remainingBalls}`);
@@ -371,13 +382,12 @@ const Game = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       const userPred = parseInt(res.data.result, 10);
-      const aiPred = Math.floor(Math.random() * 7); // 0-6
+      const aiPred = Math.floor(Math.random() * 7);
       setUserChoice(userPred.toString());
       setAiChoice(aiPred.toString());
       updateMatch(userPred, aiPred);
     } catch (err) {
       console.error("Error detecting hand:", err);
-      // Fallback logic
       const userPred = Math.floor(Math.random() * 6) + 1;
       const aiPred = Math.floor(Math.random() * 7);
       setUserChoice(userPred.toString());
@@ -386,99 +396,152 @@ const Game = () => {
     }
   };
 
-  const saveMatchRecord = (finalState) => {
+  const saveMatchRecord = (finalState, settings) => {
     try {
       const log = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      const { userBatsFirst } = settings;
+
       let winner;
-      if (finalState.matchResult.includes("YOU WON")) {
+      if (finalState.matchResult.includes(nickname.toUpperCase())) {
         winner = "Human";
-      } else if (finalState.matchResult.includes("MR. AI WON")) {
+      } else if (finalState.matchResult.includes("MR. AI")) {
         winner = "AI";
       } else {
         winner = "Draw";
       }
 
-      // In inning 2, `currentInning` is AI's batting. `firstInning` is Human's.
+      const humanScore = userBatsFirst
+        ? finalState.firstInning.runs
+        : finalState.currentInning.teamRuns;
+      const humanBalls = userBatsFirst
+        ? finalState.firstInning.totalBalls
+        : finalState.currentInning.totalBalls;
+      const aiScore = !userBatsFirst
+        ? finalState.firstInning.runs
+        : finalState.currentInning.teamRuns;
+      const aiBalls = !userBatsFirst
+        ? finalState.firstInning.totalBalls
+        : finalState.currentInning.totalBalls;
+
+      const humanWickets = userBatsFirst
+        ? finalState.currentInning.wickets
+        : finalState.firstInning.wickets;
+      const aiWickets = userBatsFirst
+        ? finalState.firstInning.wickets
+        : finalState.currentInning.wickets;
+
       const newRecord = {
         winner,
-        humanScore: finalState.firstInning.runs,
-        humanBalls: finalState.firstInning.totalBalls,
-        aiScore: finalState.currentInning.teamRuns,
-        aiBalls: finalState.currentInning.totalBalls,
+        humanScore,
+        humanBalls,
+        aiScore,
+        aiBalls,
+        humanWickets,
+        aiWickets,
         date: new Date().toISOString(),
       };
 
       log.push(newRecord);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(log));
-      toast.success("Match record saved!");
+      toast.success("Match record saved!", { id: "save-record-toast" });
     } catch (error) {
       console.error("Failed to save match record:", error);
-      toast.error("Could not save match record.");
+      toast.error("Could not save match record.", { id: "save-error-toast" });
     }
   };
 
   const updateMatch = (userNum, aiNum) => {
+    if (!gameSettings) return;
+
     setMatch((prev) => {
       if (prev.gameOver) return prev;
+
       const newState = JSON.parse(JSON.stringify(prev));
       const current = newState.currentInning;
+
+      const isUserBattingNow =
+        (newState.inning === 1 && gameSettings.userBatsFirst) ||
+        (newState.inning === 2 && !gameSettings.userBatsFirst);
+
       current.totalBalls += 1;
-      if (newState.inning === 1) {
-        if (userNum === aiNum) {
+      const isOut = userNum === aiNum;
+      let inningOver = false;
+
+      if (isOut) {
+        current.wickets += 1;
+        if (current.wickets >= gameSettings.wickets) {
+          inningOver = true;
+        } else {
+          toast.error("OUT!", {
+            icon: "💥",
+            id: "out-toast",
+          });
+        }
+      } else {
+        const runsScored = isUserBattingNow ? userNum : aiNum;
+        if (runsScored !== 0) {
+          current.teamRuns += runsScored;
+        }
+      }
+
+      if (
+        gameSettings.overs !== "Unlimited" &&
+        current.totalBalls >= gameSettings.overs * 6
+      ) {
+        inningOver = true;
+      }
+
+      if (newState.inning === 2 && current.teamRuns >= newState.target) {
+        newState.gameOver = true;
+        const winner = isUserBattingNow ? nickname : "Mr. AI";
+        const wicketsLeft = gameSettings.wickets - current.wickets;
+        newState.matchResult = `${winner.toUpperCase()} WON! Chased the target with ${wicketsLeft} wickets in hand.`;
+        saveMatchRecord(newState, gameSettings);
+      } else if (inningOver) {
+        if (newState.inning === 1) {
           toast.success(
-            `Inning 1 Over! You scored ${
-              current.teamRuns
-            }. Target to defend is ${current.teamRuns + 1}!`,
-            { duration: 5000, icon: "🏏" }
+            `Inning 1 Over! Score: ${current.teamRuns}/${
+              current.wickets
+            }. Target is ${current.teamRuns + 1}!`,
+            {
+              duration: 5000,
+              icon: "🏏",
+              id: "inning-over-toast",
+            }
           );
           newState.inning = 2;
           newState.target = current.teamRuns + 1;
-          newState.firstInning = {
-            runs: current.teamRuns,
-            overs: calculateOvers(current.totalBalls),
-            totalBalls: current.totalBalls, // Store total balls for stats
-          };
+          newState.firstInning = { ...current };
           newState.currentInning = getInitialMatchState().currentInning;
         } else {
-          if (userNum !== 0) {
-            current.teamRuns += userNum;
-          }
-        }
-      } else {
-        if (userNum === aiNum) {
           newState.gameOver = true;
-          const runsNeeded = newState.target - current.teamRuns;
-          newState.matchResult = `YOU WON! You defended the target and won by ${
-            runsNeeded - 1
-          } runs.`;
-          saveMatchRecord(newState); // Save record on win
-        } else {
-          if (aiNum !== 0) {
-            current.teamRuns += aiNum;
+          if (current.teamRuns < newState.target - 1) {
+            const winner = isUserBattingNow ? "Mr. AI" : nickname;
+            const runsNeeded = newState.target - current.teamRuns;
+            newState.matchResult = `${winner.toUpperCase()} WON by ${
+              runsNeeded - 1
+            } runs.`;
+          } else if (current.teamRuns === newState.target - 1) {
+            newState.matchResult = "MATCH DRAWN!";
           }
-          if (current.teamRuns >= newState.target) {
-            newState.gameOver = true;
-            newState.matchResult = "MR. AI WON! Better luck next time.";
-            saveMatchRecord(newState); // Save record on loss
-          }
+          saveMatchRecord(newState, gameSettings);
         }
       }
+
       current.overs = calculateOvers(current.totalBalls);
-      if (current.totalBalls > 0) {
-        current.runRate = ((current.teamRuns / current.totalBalls) * 6).toFixed(
-          2
-        );
-      }
+      current.runRate =
+        current.totalBalls > 0
+          ? ((current.teamRuns / current.totalBalls) * 6).toFixed(2)
+          : 0.0;
+
       return newState;
     });
   };
 
   const resetGame = () => {
-    setMatch(getInitialMatchState());
-    setUserChoice(null);
-    setAiChoice(null);
-    setCountdown(null);
     localStorage.removeItem("cricketMatch");
+    localStorage.removeItem("cricketGameSettings");
+    navigate("/");
   };
 
   const handleSettings = () => {
@@ -497,14 +560,25 @@ const Game = () => {
     }
   };
 
-  const isUserBatting = match.inning === 1;
-  const currentScore = match.currentInning;
+  if (!gameSettings) {
+    return (
+      <div style={styles.gameContainer}>
+        <h1 style={{ color: "white" }}>Loading Game Settings...</h1>
+        <Toaster />
+      </div>
+    );
+  }
+
+  const isUserBatting =
+    (match.inning === 1 && gameSettings.userBatsFirst) ||
+    (match.inning === 2 && !gameSettings.userBatsFirst);
+  const batterName = isUserBatting ? nickname : "Mr. AI";
   const buttonText = match.gameOver
-    ? "Play Again"
+    ? "New Game"
     : isUserBatting
     ? "Play"
     : "Bowl";
-  const batterName = isUserBatting ? nickname : "Mr. AI";
+  const currentScore = match.currentInning;
 
   return (
     <div style={styles.gameContainer}>
@@ -573,19 +647,24 @@ const Game = () => {
               }}
             >
               {aiChoice !== null ? (
-  handImages[aiChoice] ? (
-    <img
-      src={handImages[aiChoice]}
-      alt={`AI chose ${aiChoice}`}
-      style={{ width: "80%", height: "80%", objectFit: "contain" }}
-    />
-  ) : (
-    <span style={{ fontSize: "5rem", color: "white" }}>{aiChoice}</span> // fallback if no image
-  )
-) : (
-  <span style={{ fontSize: "5rem", color: "white" }}>?</span>
-)}
-
+                handImages[aiChoice] ? (
+                  <img
+                    src={handImages[aiChoice]}
+                    alt={`AI chose ${aiChoice}`}
+                    style={{
+                      width: "80%",
+                      height: "80%",
+                      objectFit: "contain",
+                    }}
+                  />
+                ) : (
+                  <span style={{ fontSize: "5rem", color: "white" }}>
+                    {aiChoice}
+                  </span>
+                )
+              ) : (
+                <span style={{ fontSize: "5rem", color: "white" }}>?</span>
+              )}
             </span>
           </div>
         </div>
@@ -620,8 +699,14 @@ const Game = () => {
           {match.inning === 2 && <span>TARGET: {match.target}</span>}
           <span>
             {batterName}: {currentScore.teamRuns}-{currentScore.wickets} (
-            {currentScore.overs} OVERS)
+            {currentScore.overs})
           </span>
+          <span>
+            {gameSettings.overs !== "Unlimited"
+              ? `OVERS: ${gameSettings.overs}`
+              : "UNLIMITED OVERS"}
+          </span>
+          <span>WICKETS: {gameSettings.wickets}</span>
           <span>RUN RATE: {currentScore.runRate}</span>
         </div>
       </div>

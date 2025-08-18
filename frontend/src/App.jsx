@@ -1,4 +1,4 @@
-import GamePage from "./pages/GamePage";
+// import GamePage from "./pages/GamePage";
 import GameTest from "./pages/GameTest.jsx";
 import History from "./pages/History.jsx";
 import HomePage from "./pages/HomePage";
