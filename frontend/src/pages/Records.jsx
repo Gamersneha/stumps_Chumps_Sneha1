@@ -40,33 +40,25 @@ const Records = () => {
   }
 
   function ratio(w, l) {
-    if (l === 0) return w > 0 ? "∞" : 0;
+    if (l === 0) return w > 0 ? "∞" : "0.00";
     return (w / l).toFixed(2);
   }
 
   function computeStats(matches) {
     const total = matches.length;
 
-    // Default state for when there are no matches played
     const defaultStats = {
       total: 0,
       draws: 0,
       last: "—",
-      human: {
-        played: 0,
-        wins: 0,
-        losses: 0,
-        winpct: 0,
-        ratio: 0,
-        streak: 0,
-      },
+      human: { wins: 0, losses: 0, winpct: 0, ratio: "0.00", streak: 0 },
       battingStats: [
         {
           MAT: 0,
           RUNS: 0,
           HS: 0,
-          AVG: 0,
-          SR: 0,
+          AVG: "0.00",
+          SR: "0.00",
           HUNDREDS: 0,
           FIFTIES: 0,
           SIXES: 0,
@@ -79,9 +71,9 @@ const Records = () => {
           RUNS: 0,
           WIKTS: 0,
           BBM: "N/A",
-          AVE: 0,
-          ECON: 0,
-          SR: 0,
+          AVE: "0.00",
+          ECON: "0.00",
+          SR: "0.00",
         },
       ],
     };
@@ -90,7 +82,6 @@ const Records = () => {
       return defaultStats;
     }
 
-    // --- Overview Stats ---
     let humanW = 0,
       humanL = 0,
       draws = 0;
@@ -99,106 +90,113 @@ const Records = () => {
       else if (m.winner === "AI") humanL++;
       else draws++;
     });
-    const last = matches[total - 1].winner;
+
     let humanStreak = 0;
     for (let i = matches.length - 1; i >= 0; i--) {
       if (matches[i].winner === "Human") humanStreak++;
       else break;
     }
 
-    // --- Aggregate Career Stats ---
-    const careerBatting = {
-      MAT: total,
+    const career = {
       RUNS: 0,
       HS: 0,
       HUNDREDS: 0,
       FIFTIES: 0,
-      SIXES: 0,
       BALLS_FACED: 0,
-    };
-    const careerBowling = {
-      MAT: total,
-      BALLS: 0,
-      RUNS: 0,
-      WIKTS: 0,
+      DISMISSALS: 0,
+      RUNS_CONCEDED: 0,
+      BALLS_BOWLED: 0,
+      WIKTS_TAKEN: 0,
       BEST_RUNS: Infinity,
+      BEST_WICKETS: 0,
     };
 
     matches.forEach((m) => {
-      // Batting aggregation (Human's performance)
-      careerBatting.RUNS += m.humanScore;
-      careerBatting.HS = Math.max(careerBatting.HS, m.humanScore);
-      if (m.humanScore >= 100) careerBatting.HUNDREDS++;
-      else if (m.humanScore >= 50) careerBatting.FIFTIES++;
-      careerBatting.BALLS_FACED += m.humanBalls;
-      // Note: Sixes are not tracked in the Game component, so they will remain 0.
+      // --- ROBUST AGGREGATION ---
+      // Use `|| 0` to safely handle old records that might be missing data.
+      const humanScore = m.humanScore || 0;
+      const aiScore = m.aiScore || 0;
+      const humanWickets = m.humanWickets || 0;
+      const aiWickets = m.aiWickets || 0;
 
-      // Bowling aggregation (Human's performance)
-      careerBowling.RUNS += m.aiScore;
-      careerBowling.BALLS += m.aiBalls;
-      if (m.winner === "Human") {
-        // A win means the human took the AI's wicket
-        careerBowling.WIKTS++;
-        careerBowling.BEST_RUNS = Math.min(careerBowling.BEST_RUNS, m.aiScore);
+      career.RUNS += humanScore;
+      career.HS = Math.max(career.HS, humanScore);
+      if (humanScore >= 100) career.HUNDREDS++;
+      else if (humanScore >= 50) career.FIFTIES++;
+      career.BALLS_FACED += m.humanBalls || 0;
+      career.DISMISSALS += aiWickets;
+
+      career.RUNS_CONCEDED += aiScore;
+      career.BALLS_BOWLED += m.aiBalls || 0;
+      career.WIKTS_TAKEN += humanWickets;
+
+      // Best Bowling calculation
+      if (humanWickets > career.BEST_WICKETS) {
+        career.BEST_WICKETS = humanWickets;
+        career.BEST_RUNS = aiScore;
+      } else if (
+        humanWickets === career.BEST_WICKETS &&
+        aiScore < career.BEST_RUNS
+      ) {
+        career.BEST_RUNS = aiScore;
       }
     });
 
-    // --- Calculate Derived Stats ---
     const battingAvg =
-      careerBatting.WIKTS > 0
-        ? (careerBatting.RUNS / humanL).toFixed(2)
-        : "0.00"; // Avg is runs per dismissal
+      career.DISMISSALS > 0
+        ? (career.RUNS / career.DISMISSALS).toFixed(2)
+        : "N/A";
     const battingSr =
-      careerBatting.BALLS_FACED > 0
-        ? ((careerBatting.RUNS / careerBatting.BALLS_FACED) * 100).toFixed(2)
+      career.BALLS_FACED > 0
+        ? ((career.RUNS / career.BALLS_FACED) * 100).toFixed(2)
         : "0.00";
 
-    const bowlingAve =
-      careerBowling.WIKTS > 0
-        ? (careerBowling.RUNS / careerBowling.WIKTS).toFixed(2)
-        : "0.00";
-    const bowlingSr =
-      careerBowling.WIKTS > 0
-        ? (careerBowling.BALLS / careerBowling.WIKTS).toFixed(2)
-        : "0.00";
     const bowlingEcon =
-      careerBowling.BALLS > 0
-        ? ((careerBowling.RUNS / careerBowling.BALLS) * 6).toFixed(2)
+      career.BALLS_BOWLED > 0
+        ? ((career.RUNS_CONCEDED / career.BALLS_BOWLED) * 6).toFixed(2)
         : "0.00";
-    const bowlingBbm = isFinite(careerBowling.BEST_RUNS)
-      ? `1/${careerBowling.BEST_RUNS}`
-      : "N/A";
+    const bowlingAve =
+      career.WIKTS_TAKEN > 0
+        ? (career.RUNS_CONCEDED / career.WIKTS_TAKEN).toFixed(2)
+        : "N/A";
+    const bowlingSr =
+      career.WIKTS_TAKEN > 0
+        ? (career.BALLS_BOWLED / career.WIKTS_TAKEN).toFixed(2)
+        : "N/A";
+    const bowlingBbm =
+      career.BEST_WICKETS > 0
+        ? `${career.BEST_WICKETS}/${career.BEST_RUNS}`
+        : "N/A";
 
     return {
       total,
       draws,
-      last,
+      last: matches.length > 0 ? matches[total - 1].winner : "—",
       human: {
-        played: total,
         wins: humanW,
         losses: humanL,
-        winpct: total ? humanW / (total - draws) : 0, // Win pct usually excludes draws
+        winpct: total > draws ? humanW / (total - draws) : 0,
         ratio: ratio(humanW, humanL),
         streak: humanStreak,
       },
       battingStats: [
         {
-          MAT: careerBatting.MAT,
-          RUNS: careerBatting.RUNS,
-          HS: careerBatting.HS,
-          AVG: battingAvg,
+          MAT: total,
+          RUNS: career.RUNS,
+          HS: career.HS,
+          AVG: career.RUNS / total,
           SR: battingSr,
-          HUNDREDS: careerBatting.HUNDREDS,
-          FIFTIES: careerBatting.FIFTIES,
-          SIXES: careerBatting.SIXES,
+          HUNDREDS: career.HUNDREDS,
+          FIFTIES: career.FIFTIES,
+          SIXES: 0,
         },
       ],
       bowlingStats: [
         {
-          MAT: careerBowling.MAT,
-          BALLS: careerBowling.BALLS,
-          RUNS: careerBowling.RUNS,
-          WIKTS: careerBowling.WIKTS,
+          MAT: total,
+          BALLS: career.BALLS_BOWLED,
+          RUNS: career.RUNS_CONCEDED,
+          WIKTS: career.WIKTS_TAKEN,
           BBM: bowlingBbm,
           AVE: bowlingAve,
           ECON: bowlingEcon,
@@ -210,6 +208,7 @@ const Records = () => {
 
   const stats = computeStats(matches);
 
+  // Radar data and options remain unchanged...
   const radarData = {
     labels: ["Wins", "Losses", "Draws", "Win %", "W/L Ratio"],
     datasets: [
@@ -220,7 +219,7 @@ const Records = () => {
           stats.human.losses,
           stats.draws,
           stats.human.winpct * 100,
-          parseFloat(stats.human.ratio) || 0, // Ensure ratio is a number
+          parseFloat(stats.human.ratio) || 0,
         ],
         backgroundColor: "rgba(33,192,122,0.2)",
         borderColor: "rgba(33,192,122,1)",
@@ -245,37 +244,36 @@ const Records = () => {
         angleLines: { color: "rgba(255,255,255,0.2)" },
         pointLabels: { color: "#e6e8ee" },
         suggestedMax:
-          Math.max(stats.human.wins, stats.human.losses, stats.draws) + 5,
+          Math.max(stats.human.wins, stats.human.losses, stats.draws, 5) + 2,
       },
     },
   };
 
   return (
+    // JSX remains unchanged...
     <div className="records-wrapper">
       <header>
-        <h1>Stumps Chumps — Match Records</h1>
+        <h1>Hand Cricket — Match Records</h1>
       </header>
-
       <main className="flex-1 container">
-        {/* Overview with merged stats */}
         <div className="card">
           <h2>Overview</h2>
           <div className="kpis">
             <div className="kpi">
               <div className="label">Total Matches</div>
-              <div className="value">{stats.total}</div>
+              <div className="value">{stats.total / 2}</div>
             </div>
             <div className="kpi good">
               <div className="label">Wins</div>
-              <div className="value">{stats.human.wins}</div>
+              <div className="value">{stats.human.wins / 2}</div>
             </div>
             <div className="kpi bad">
               <div className="label">Losses</div>
-              <div className="value">{stats.human.losses}</div>
+              <div className="value">{stats.human.losses / 2}</div>
             </div>
             <div className="kpi warn">
               <div className="label">Draws</div>
-              <div className="value">{stats.draws}</div>
+              <div className="value">{stats.draws / 2}</div>
             </div>
             <div className="kpi">
               <div className="label">Win %</div>
@@ -290,13 +288,12 @@ const Records = () => {
               <div className="value">{stats.last}</div>
             </div>
             <div className="kpi">
-              <div className="label">Human Win Streak</div>
-              <div className="value">{stats.human.streak}</div>
+              <div className="label">Win Streak</div>
+              <div className="value">{stats.human.streak / 2}</div>
             </div>
           </div>
         </div>
 
-        {/* Radar + Scorecard */}
         <div className="card chart-scorecard-row flex-1">
           <div className="radar-chart">
             <Radar data={radarData} options={radarOptions} />
@@ -320,8 +317,8 @@ const Records = () => {
                 <tbody>
                   {stats.battingStats.map((b, idx) => (
                     <tr key={idx}>
-                      <td>{b.MAT}</td>
-                      <td>{b.RUNS}</td>
+                      <td>{b.MAT / 2}</td>
+                      <td>{b.RUNS / 2}</td>
                       <td>{b.HS}</td>
                       <td>{b.AVG}</td>
                       <td>{b.SR}</td>
@@ -352,10 +349,10 @@ const Records = () => {
                 <tbody>
                   {stats.bowlingStats.map((b, idx) => (
                     <tr key={idx}>
-                      <td>{b.MAT}</td>
-                      <td>{b.BALLS}</td>
-                      <td>{b.RUNS}</td>
-                      <td>{b.WIKTS}</td>
+                      <td>{b.MAT / 2}</td>
+                      <td>{b.BALLS / 2}</td>
+                      <td>{b.RUNS / 2}</td>
+                      <td>{b.WIKTS / 2}</td>
                       <td>{b.BBM}</td>
                       <td>{b.AVE}</td>
                       <td>{b.ECON}</td>
