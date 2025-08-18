@@ -3,6 +3,12 @@ import axios from "axios";
 import { Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import zero from "/hand_0.png";
+import two from "/hand_2.png";
+import three from "/hand_3.png";
+import four from "/hand_4.png";
+import five from "/hand_5.png";
+import six from "/hand_6.png";
 
 // The key for storing the match history log
 const STORAGE_KEY = "handCricketMatchLog_v2";
@@ -18,7 +24,7 @@ const styles = {
     fontFamily: "sans-serif",
     padding: "1rem",
     boxSizing: "border-box",
-    backgroundImage: `url('/HomeBg.jpg')`,
+    backgroundImage: `url("/HomeBg.jpg")`,
     backgroundSize: "cover",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
@@ -178,6 +184,15 @@ const styles = {
     fontSize: "1.5rem",
     fontWeight: "bold",
   },
+};
+
+const handImages = {
+  0: zero,
+  2: two,
+  3: three,
+  4: four,
+  5: five,
+  6: six,
 };
 
 const Game = () => {
@@ -381,7 +396,7 @@ const Game = () => {
         winner = "Draw";
       }
 
-      // In inning 2, `currentInning` is AI's batting. `firstInning` is Human's.
+      // In inning 2, currentInning is AI's batting. firstInning is Human's.
       const newRecord = {
         winner,
         humanScore: finalState.firstInning.runs,
@@ -555,7 +570,25 @@ const Game = () => {
                 textShadow: "0 0 10px #fff",
               }}
             >
-              {aiChoice ?? "?"}
+              {aiChoice !== null ? (
+                handImages[aiChoice] ? (
+                  <img
+                    src={handImages[aiChoice]}
+                    alt={`AI chose ${aiChoice}`}
+                    style={{
+                      width: "80%",
+                      height: "80%",
+                      objectFit: "contain",
+                    }}
+                  />
+                ) : (
+                  <span style={{ fontSize: "5rem", color: "white" }}>
+                    {aiChoice}
+                  </span> // fallback if no image
+                )
+              ) : (
+                <span style={{ fontSize: "5rem", color: "white" }}>?</span>
+              )}
             </span>
           </div>
         </div>
