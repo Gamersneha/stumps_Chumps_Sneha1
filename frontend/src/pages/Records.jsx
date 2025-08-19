@@ -252,9 +252,39 @@ const Records = () => {
   return (
     // JSX remains unchanged...
     <div className="records-wrapper">
-      <header>
-        <h1>Hand Cricket — Match Records</h1>
-      </header>
+  <header
+  style={{
+    position: "relative",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "10px 0",
+  }}
+>
+  {/* Back Arrow in the top-left */}
+  <span
+    onClick={() => (window.location.href = "/")}
+    style={{
+      position: "absolute",
+      left: "15px",
+      top: "50%",
+      transform: "translateY(-50%)",
+      cursor: "pointer",
+      fontSize: "4rem",
+      fontWeight: "bold",
+      color: "#e6e8ee",
+    }}
+  >
+    ←
+  </span>
+
+  {/* Centered Heading */}
+  <h1 style={{ margin: 0, textAlign: "center" }}>
+    Hand Cricket — Match Records
+  </h1>
+</header>
+
+
       <main className="flex-1 container">
         <div className="card">
           <h2>Overview</h2>

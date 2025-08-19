@@ -139,3 +139,20 @@
   background: #4361ee;
   transform: translateY(1px);
 }
+.back-home {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: bold;
+  transition: transform 0.2s ease;
+}
+
+.back-home:hover {
+  transform: scale(1.1);
+  color: #4895ef;
+}
