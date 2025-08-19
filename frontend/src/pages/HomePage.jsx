@@ -180,12 +180,8 @@ const Home = () => {
 
         {/* Main Menu */}
         <div className="menu">
-          <Link to="/game">
-            <NeonButton
-              text="Play with AI"
-              color="pink"
-              extraClass="big-btn"
-            />
+          <Link to="/toss">
+            <NeonButton text="Play with AI" color="pink" extraClass="big-btn" />
           </Link>
         </div>
 
