@@ -1,38 +1,54 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stars, OrbitControls } from "@react-three/drei";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "../styles/home.scss";
 import cbg from "/HomeBg.jpg";
-import { User } from "lucide-react";
+import NicknamePopup from "./NicknamePopup";
 
+// DiceBear base URL
+const avatarBase = "https://api.dicebear.com/6.x/adventurer/svg?seed=";
+
+// Button Component
 const NeonButton = ({ text, color, children, extraClass, onClick }) => (
   <button
     className={`neon-button ${color} ${extraClass || ""}`}
     onClick={onClick}
-    style={extraClass === "fixed-size" ? { minWidth: "150px" } : {}}
   >
     {children || text}
   </button>
 );
 
+// Logo Component
 const NeonLogo = ({ text }) => <h1>{text}</h1>;
 
 const Home = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [nickname, setNickname] = useState("Player1");
-  const [avatarUrl, setAvatarUrl] = useState(
-    `https://api.dicebear.com/6.x/big-smile/svg?seed=${Math.random()
-      .toString(36)
-      .substring(7)}`
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [nickname, setNickname] = useState(
+    localStorage.getItem("nickname") || "Player123"
   );
-  const navigate = useNavigate();
+  const [avatar, setAvatar] = useState(localStorage.getItem("avatar") || "");
 
-  const generateAvatar = () => {
-    const randomSeed = Math.random().toString(36).substring(7);
-    setAvatarUrl(
-      `https://api.dicebear.com/6.x/big-smile/svg?seed=${randomSeed}`
-    );
+  // Generate avatar from nickname initially if none exists
+  useEffect(() => {
+    if (!avatar) {
+      const url = `${avatarBase}${encodeURIComponent(nickname)}`;
+      setAvatar(url);
+      localStorage.setItem("avatar", url);
+    }
+  }, [nickname]);
+
+  const handleOpenPopup = () => setIsPopupOpen(true);
+  const handleClosePopup = () => setIsPopupOpen(false);
+
+  const handleSaveNickname = (newNickname) => {
+    setNickname(newNickname);
+    localStorage.setItem("nickname", newNickname);
+
+    // Update avatar to match new nickname (consistent)
+    const url = `${avatarBase}${encodeURIComponent(newNickname)}`;
+    setAvatar(url);
+    localStorage.setItem("avatar", url);
   };
 
   return (
@@ -53,123 +69,30 @@ const Home = () => {
       </Canvas>
 
       <div className="ui-overlay">
-        {/* Cricket Icon Top Left */}
-        <div
-          className="profile"
-          style={{ position: "absolute", top: "20px", left: "20px" }}
-        >
-          <img
-            src="Ball.png"
-            alt="logo"
-            style={{ width: 80, height: 80, marginLeft: "10px" }}
-          />
+        {/* Profile (Clickable Avatar -> History Page) */}
+        <div className="profile">
+          <Link to="/history">
+            <img
+              src={avatar}
+              alt="avatar"
+              className="avatar"
+              style={{
+                width: 80,
+                height: 80,
+                borderRadius: "50%",
+                cursor: "pointer",
+              }}
+            />
+          </Link>
+          <span className="name">{nickname}</span>
         </div>
 
         {/* Top Nav */}
         <div className="top-nav">
           <Link to="/rules">
-            <NeonButton text="Rules" color="blue" extraClass="fixed-size" />
+            <NeonButton text="Rules" color="blue" />
           </Link>
-          <NeonButton text="Tutorial" color="blue" extraClass="fixed-size" />
-
-          {/* ✅ Profile Dropdown */}
-          <div style={{ position: "relative", display: "inline-block" }}>
-            <NeonButton color="blue" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              <img
-                src={avatarUrl}
-                alt="avatar"
-                style={{ width: "32px", height: "32px", borderRadius: "50%" }}
-              />
-            </NeonButton>
-
-            {isMenuOpen && (
-              <div
-                style={{
-                  position: "absolute",
-                  right: 0,
-                  top: "50px",
-                  background: "#111",
-                  borderRadius: "10px",
-                  padding: "15px",
-                  minWidth: "220px",
-                  boxShadow: "0px 4px 10px rgba(0,0,0,0.5)",
-                  zIndex: 1000,
-                  border: "1px solid #0ff",
-                  color: "#fff",
-                }}
-              >
-                <p
-                  style={{
-                    fontWeight: "bold",
-                    color: "#0ff",
-                    marginBottom: "10px",
-                  }}
-                >
-                  Profile
-                </p>
-
-                {/* Nickname Input */}
-                <div style={{ marginBottom: "10px" }}>
-                  <label
-                    htmlFor="nickname"
-                    style={{
-                      display: "block",
-                      marginBottom: "5px",
-                      color: "#0ff",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Nickname
-                  </label>
-                  <input
-                    id="nickname"
-                    type="text"
-                    value={nickname}
-                    onChange={(e) => setNickname(e.target.value)}
-                    placeholder="Enter nickname"
-                    style={{
-                      width: "100%",
-                      padding: "8px",
-                      borderRadius: "5px",
-                      border: "1px solid #0ff",
-                      marginBottom: "10px",
-                      background: "#222",
-                      color: "#fff",
-                    }}
-                  />
-                </div>
-
-                {/* Avatar Display */}
-                <div style={{ textAlign: "center", marginBottom: "10px" }}>
-                  <img
-                    src={avatarUrl}
-                    alt="avatar"
-                    style={{
-                      width: "80px",
-                      height: "80px",
-                      borderRadius: "50%",
-                    }}
-                  />
-                </div>
-
-                {/* Generate Avatar Button */}
-                <button
-                  onClick={generateAvatar}
-                  style={{
-                    width: "100%",
-                    padding: "8px",
-                    borderRadius: "5px",
-                    border: "1px solid #0ff",
-                    background: "none",
-                    color: "#0ff",
-                    cursor: "pointer",
-                  }}
-                >
-                  Generate Avatar
-                </button>
-              </div>
-            )}
-          </div>
+          <NeonButton text="Tutorial" color="blue" />
         </div>
 
         {/* Center Logo */}
@@ -180,32 +103,17 @@ const Home = () => {
 
         {/* Main Menu */}
         <div className="menu">
-          <Link to="/game">
-            <NeonButton
-              text="Play with AI"
-              color="pink"
-              extraClass="big-btn"
-            />
+          <Link to="/toss">
+            <NeonButton text="Play with AI" color="pink" extraClass="big-btn" />
           </Link>
         </div>
 
-        {/* Bottom Nav */}
-        <div
-          className="bottom-nav"
-          style={{
-            position: "absolute",
-            bottom: "20px",
-            left: "20px",
-            display: "flex",
-            gap: "10px",
-          }}
-        >
-          <NeonButton
-            text="MATCH HISTORY"
-            onClick={() => navigate("/history")}
-          />
-          <NeonButton text="RECORDS" onClick={() => navigate("/records")} />
-        </div>
+        {/* Nickname Popup */}
+        <NicknamePopup
+          isOpen={isPopupOpen}
+          onClose={handleClosePopup}
+          onSave={handleSaveNickname}
+        />
       </div>
     </div>
   );
