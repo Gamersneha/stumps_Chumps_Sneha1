@@ -120,6 +120,18 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
   },
+  neonCircleOverlay: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "60%",
+    height: "60%",
+    borderRadius: "50%",
+    border: "3px solid #0fa",
+    boxShadow: "0 0 5px #0fa, 0 0 10px #0fa, 0 0 20px #0fa, 0 0 30px #0fa",
+    zIndex: 5,
+  },
   countdownOverlay: {
     position: "absolute",
     top: "50%",
@@ -362,16 +374,43 @@ const Game = () => {
     }, 1000);
   };
 
+  // --- MODIFIED FUNCTION ---
   const captureAndSend = async () => {
     if (!videoRef.current || !canvasRef.current) return;
     const video = videoRef.current;
     const canvas = canvasRef.current;
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+
+    // Determine the largest possible square that can be cropped from the center.
+    const videoWidth = video.videoWidth;
+    const videoHeight = video.videoHeight;
+    const cropSize = Math.min(videoWidth, videoHeight);
+
+    // Calculate the top-left corner (sx, sy) of the crop area to keep it centered.
+    const sx = (videoWidth - cropSize) / 2;
+    const sy = (videoHeight - cropSize) / 2;
+
+    // Set the canvas to be a square of that size.
+    canvas.width = cropSize;
+    canvas.height = cropSize;
+
     const context = canvas.getContext("2d");
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Draw only the cropped, central square part of the video onto the canvas.
+    context.drawImage(
+      video,
+      sx,
+      sy,
+      cropSize,
+      cropSize,
+      0,
+      0,
+      cropSize,
+      cropSize
+    );
+
     const imageSrc = canvas.toDataURL("image/jpeg");
     if (!imageSrc) return console.error("Failed to capture image.");
+
     const blob = await fetch(imageSrc).then((res) => res.blob());
     const file = new File([blob], "hand.jpg", { type: "image/jpeg" });
     const formData = new FormData();
@@ -395,6 +434,7 @@ const Game = () => {
       updateMatch(userPred, aiPred);
     }
   };
+  // --- END OF MODIFICATION ---
 
   const saveMatchRecord = (finalState, settings) => {
     try {
@@ -613,6 +653,7 @@ const Game = () => {
             </span>
           </div>
           <div style={styles.playerCard}>
+            <div style={styles.neonCircleOverlay}></div>
             {countdown !== null && countdown > 0 && (
               <div style={styles.countdownOverlay}>{countdown}</div>
             )}
