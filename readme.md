@@ -14,7 +14,7 @@ Git
 Setup Instructions
 
 Clone the Repository
-git clone https://github.com/your-username/stumps-chumps.git
+git clone https://github.com/iammanojeet/stumps-chumps.git
 cd Stumps-Chumps
 
 
