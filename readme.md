@@ -1,5 +1,4 @@
-Stumps=Chumps
-Stumps=Chumps is a project that uses a machine learning model to detect fingers through a webcam, integrated with a React-Vite frontend and a Python backend.
+Stumps Chumps is a project that uses a machine learning model to detect fingers through a webcam, integrated with a React-Vite frontend and a Python backend.
 Project Structure
 
 frontend: React-Vite application for the user interface.
