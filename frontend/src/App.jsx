@@ -7,6 +7,7 @@ import Rules from "./pages/Rules.jsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Toss from "./pages/Toss.jsx";
+import Home_Sayan from "./pages/HomePage_Sayan.jsx";
 // import { ToastContainer } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 
@@ -15,6 +16,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/homeSayan" element={<Home_Sayan />} />
         {/* <Route path="/game" element={<GamePage />} /> */}
         <Route path="/game" element={<GameTest />} />
         <Route path="/history" element={<History />} />
