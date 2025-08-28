@@ -5,7 +5,7 @@ import HomePage from "./pages/HomePage";
 import Records from "./pages/Records.jsx";
 import Rules from "./pages/Rules.jsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import Home from "./pages/HomePageSneha.jsx";
 import Toss from "./pages/Toss.jsx";
 // import { ToastContainer } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
@@ -15,6 +15,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/home" element={<Home />} />
         {/* <Route path="/game" element={<GamePage />} /> */}
         <Route path="/game" element={<GameTest />} />
         <Route path="/history" element={<History />} />
