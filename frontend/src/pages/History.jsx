@@ -20,13 +20,9 @@ const History = () => {
 
   return (
     <div className="profile-page">
-      {/* ✅ Back to Home Arrow */}
-      <Link to="/" className="back-home">
-        <ArrowLeft size={28} /> {/* icon */}
-      </Link>
+      
 
-      {/* Career History */}
-      <h2 className="career-title">Match History</h2>
+      
 
       <div className="match-list">
         {matches.map((match, index) => (

@@ -4,7 +4,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Text } from "@react-three/drei";
 import gsap from "gsap";
 import toast, { Toaster } from "react-hot-toast";
-import cbg from "/HomeBg.jpg";
+//import cbg from "/HomeBg.jpg";
 import "./Toss.scss";
 
 // --- Coin 3D Component ---

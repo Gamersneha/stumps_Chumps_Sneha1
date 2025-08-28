@@ -262,7 +262,7 @@ const Records = () => {
   }}
 >
   {/* Back Arrow in the top-left */}
-  <span
+  {/* <span
     onClick={() => (window.location.href = "/")}
     style={{
       position: "absolute",
@@ -276,7 +276,7 @@ const Records = () => {
     }}
   >
     ←
-  </span>
+  </span> */}
 
   {/* Centered Heading */}
   <h1 style={{ margin: 0, textAlign: "center" }}>
