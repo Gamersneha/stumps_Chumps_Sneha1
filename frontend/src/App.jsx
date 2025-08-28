@@ -5,7 +5,7 @@ import HomePage from "./pages/HomePage";
 import Records from "./pages/Records.jsx";
 import Rules from "./pages/Rules.jsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import Home from "./pages/HomePageSneha.jsx";
 import Toss from "./pages/Toss.jsx";
 import Home_Sayan from "./pages/HomePage_Sayan.jsx";
 import Register from "./pages/Register.jsx";
@@ -18,9 +18,16 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
+
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+
+
+        <Route path="/home" element={<Home />} />
+
+
         <Route path="/homeSayan" element={<Home_Sayan />} />
+
         {/* <Route path="/game" element={<GamePage />} /> */}
         <Route path="/game" element={<GameTest />} />
         <Route path="/history" element={<History />} />
