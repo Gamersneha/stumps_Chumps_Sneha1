@@ -8,6 +8,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/HomePageSneha.jsx";
 import Toss from "./pages/Toss.jsx";
 import Home_Sayan from "./pages/HomePage_Sayan.jsx";
+import Register from "./pages/Register.jsx";
+import Login from "./pages/Login.jsx";
 // import { ToastContainer } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 
@@ -17,7 +19,12 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
 
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+
+
         <Route path="/home" element={<Home />} />
+
 
         <Route path="/homeSayan" element={<Home_Sayan />} />
 
